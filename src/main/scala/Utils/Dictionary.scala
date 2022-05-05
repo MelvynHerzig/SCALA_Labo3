@@ -28,6 +28,44 @@ object Dictionary:
     "ou" -> "ou",
     "svp" -> "svp",
     "stp" -> "svp",
-    // TODO - Part 2 Step 1
+    
+    "maison"->"maison",
+    "home made"->"maison",
+    "fait maison"->"maison",
+    "cailler"->"cailler",
+    "au chocolat"->"cailler",
+    "farmer"->"farmer",
+    "boxer" -> "boxer",
+    "wittekop" -> "wittekop",
+    "punkipa" -> "punkipa",
+    "jackhammer" -> "jackhammer",
+    "ténébreuse" -> "tenebreuse",
+
+    "voudrais" -> "vouloir",
+
+    "mon" -> "mon",
+    "me" -> "me",
+    "m" -> "me",
+
+    "commander" -> "commander",
+
+    "connaitre" -> "connaitre",
+    "connaître" -> "connaitre",
+
+    "solde" -> "solde",
+
+    "combien" -> "combien",
+    "coûte" -> "coûter",
+    "coûtent" -> "coûter",
+
+    "quel" -> "quel",
+    "le" -> "le",
+    "prix" -> "prix",
+    "de" -> "de",
+
+    "appeler" -> "appeler",
+    "appelle" -> "appeler",
+    "prénomme" -> "appeler",
+    "prénommer" -> "appeler"
   )
 end Dictionary

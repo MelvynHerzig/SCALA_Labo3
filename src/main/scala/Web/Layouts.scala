@@ -2,10 +2,57 @@ package Web
 
 import scalatags.Text.all._
 import scalatags.Text.tags2
+import Data.{MessageService, AccountService, SessionService, Session}
+
 
 /**
- * Assembles the method used to layout ScalaTags
- */
+  * Assembles the method used to layout ScalaTags
+  */
 object Layouts:
-    // You can use it to store your methods to generate ScalaTags.
+  def index()(session: Session) =
+    html(
+      head(
+        script(src := "/static/js/main.js"),
+        tag("link")(href := "/static/css/main.css", rel := "stylesheet")
+      ),
+      body(
+        tag("nav")(
+          a(
+            cls := "nav-brand"
+          )(
+            "Bot-Tender"
+          ),
+          div(
+            cls := "nav-item"
+          )(
+            a(href := "/logout")(
+              session.getCurrentUser.map(u => a(href := "/logout")("Logout"))
+                .getOrElse(a(href := "/login")("Login"))
+            )
+          )
+        ),
+        div(
+          cls := "content"
+        )(
+          div(
+            id := "boardMessage"
+          )(
+            div(margin.auto)("Please wait! the messages are loading!")
+            /*div(
+              cls := ".msg"
+            )(
+              span(cls:="author"),
+              span(cls := "msg-content")
+            )*/
+          ),
+          form(id := "msgForm", onsubmit := "submitMessageForm(); return false")(
+            div(id := "errorDiv", cls := "errorMsg")("Error"),
+            label(`for`:="messageInput"),
+            input(id:="messageInput", tpe:="submit"),
+            input(tpe:="submit")
+          )
+        )
+      )
+    )
+
 end Layouts

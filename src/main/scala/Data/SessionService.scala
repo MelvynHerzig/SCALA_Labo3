@@ -32,10 +32,13 @@ class SessionImpl extends SessionService:
   private def nextSid(): String =
     val sid: String = Seq.fill(8)(Random.nextPrintableChar()).mkString
     if existingSessions.contains(sid) then nextSid() else sid
+  end nextSid
 
   override def create(): Session = new Session:
     override val sid: String = nextSid()
     existingSessions(sid) = this
+  end create
+        
   override def exists(sid: String): Boolean = existingSessions.contains(sid)
   override def get(sid: String): Option[Session] = existingSessions.get(sid)
 end SessionImpl

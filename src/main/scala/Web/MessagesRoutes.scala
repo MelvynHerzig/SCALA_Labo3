@@ -3,6 +3,7 @@ package Web
 import Chat.{AnalyzerService, TokenizerService}
 import Data.{MessageService, AccountService, SessionService, Session}
 
+
 /**
   * Assembles the routes dealing with the message board:
   * - One route to display the home page
@@ -21,9 +22,10 @@ class MessagesRoutes(tokenizerSvc: TokenizerService,
     @getSession(sessionSvc) // This decorator fills the `(session: Session)` part of the `index` method.
     @cask.get("/")
     def index()(session: Session) =
+        Layouts.index()(session)
         // TODO - Part 3 Step 2: Display the home page (with the message board and the form to send new messages)
-        session.getCurrentUser.map(u => s"You are logged in as ${u} !")
-               .getOrElse("You are not logged in !")
+//        session.getCurrentUser.map(u => s"You are logged in as ${u} !")
+//               .getOrElse("You are not logged in !")
 
     // TODO - Part 3 Step 4b: Process the new messages sent as JSON object to `/send`. The JSON looks
     //      like this: `{ "msg" : "The content of the message" }`.
