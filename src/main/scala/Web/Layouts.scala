@@ -37,7 +37,7 @@ object Layouts:
           div(
             id := "boardMessage"
           )(
-            div(margin.auto)("Please wait! the messages are loading!")
+            div(textAlign.center)("Please wait! the messages are loading!")
             /*div(
               cls := ".msg"
             )(
