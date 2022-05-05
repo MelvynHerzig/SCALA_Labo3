@@ -38,6 +38,7 @@ object Layouts:
             id := "boardMessage"
           )(
             div(cls:="msg", textAlign.center)("Please wait! the messages are loading!")
+            // When messages are implemented
             /*div(
               cls := ".msg"
             )(
