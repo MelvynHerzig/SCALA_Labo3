@@ -37,7 +37,7 @@ object Layouts:
           div(
             id := "boardMessage"
           )(
-            div(margin.auto)("Please wait! the messages are loading!")
+            div(cls:="msg")("Please wait! the messages are loading!")
             /*div(
               cls := ".msg"
             )(
@@ -46,9 +46,9 @@ object Layouts:
             )*/
           ),
           form(id := "msgForm", onsubmit := "submitMessageForm(); return false")(
-            div(id := "errorDiv", cls := "errorMsg")("Error"),
-            label(`for`:="messageInput"),
-            input(id:="messageInput", tpe:="submit"),
+            div(id := "errorDiv", cls := "errorMsg", display:="none")("Error"),
+            label(`for`:="messageInput")("Your message:"),
+            input(id:="messageInput", tpe:="text"),
             input(tpe:="submit")
           )
         )

@@ -55,6 +55,7 @@ form > input[type="text"] {
 }
 .msg {
     margin: 0.1em 0;
+    text-align: center;
 }
 .mention {
     color: rgb(5, 42, 105);
