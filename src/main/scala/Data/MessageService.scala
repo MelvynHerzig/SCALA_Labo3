@@ -34,14 +34,37 @@ trait MessageService:
     def deleteHistory(): Unit
 
 class MessageImpl extends MessageService:
+
     // TODO - Part 3 Step 4a: Store the messages and the corresponding user in memory.
     //       Implement methods to add new messages, to get the last 20 messages and to delete all existing messages.
 
-    override def add(sender: Username, msg: MsgContent, mention: Option[Username] = None, exprType: Option[ExprTree] = None, replyToId: Option[Long] = None): Long =
-        ???
+    // List of memorized messages.
+    private var messages : List[Message] = Nil
 
-    override def getLatestMessages(n: Int) =
-        ???
+    // Next message identifier.
+    private var nextUid : Long = 0
+
+    override def add(sender: Username, msg: MsgContent, mention: Option[Username] = None, exprType: Option[ExprTree] = None, replyToId: Option[Long] = None): Long =
+        messages = Message(sender, msg, mention, exprType, replyToId) +: messages
+        val messageUid = nextUid
+        nextUid += 1
+        messageUid
+    end add
+
+    override def getLatestMessages(n: Int) : Seq[(Username, MsgContent)] =
+        messages.take(n).map(m => (m.sender, m.msg))
+    end getLatestMessages
 
     override def deleteHistory(): Unit =
-        ???
+        messages = Nil
+    end deleteHistory
+
+/**
+  * Message case class
+  * @param sender The username of the sender
+  * @param msg The content of the message
+  * @param mention The name if it exists of the user mentioned at the start of the message with an '@'. For example the message "@Julian Hello" mentions "Julian"
+  * @param exprType If the message is to the bot, the type of the query
+  * @param replyToId If the message is a reply to another message, the id of the other message. Used for example, when the bot answers to a query
+  */
+case class Message(sender: Username, msg: MsgContent, mention: Option[Username], exprType: Option[ExprTree], replyToId: Option[Long])
