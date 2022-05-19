@@ -25,7 +25,7 @@ trait ProductService:
     * @param brand   Brand name.
     * @return Returns the price of the product.
     */
-  def getPrice(product: ProductName, brand: BrandName): Double
+  def getPrice(product: ProductName, brand: Option[BrandName]): Double
 
   /**
     * Gets the default brand of a given product.
@@ -73,10 +73,7 @@ class ProductImpl extends ProductService :
       case _ => throw new IllegalArgumentException("Unknown product")
   end getProductInformations
 
-  def getPrice(product: ProductName, brand: String): Double =
-    if brand == null then
-      throw new IllegalArgumentException("Brand can not be null")
-    else
+  def getPrice(product: ProductName, brand: Option[String]): Double =
       getProductInformations(product).getPrice(brand)
   end getPrice
 
@@ -85,14 +82,13 @@ class ProductImpl extends ProductService :
   end getDefaultBrand
 
 end ProductImpl
-
 /**
   * Class in charge of storing product information.
   *
   * @param defaultBrand Default brand name of the product.
   * @param prices       Default prices for each brand of the product.
   */
-class ProductInformation(val defaultBrand: String, val prices: Map[String, Double]):
+case class ProductInformation(private val defaultBrand: String, private val prices: Map[String, Double]):
 
   /**
     * Alias, a brand name is a String
@@ -106,12 +102,12 @@ class ProductInformation(val defaultBrand: String, val prices: Map[String, Doubl
     * @return Returns the price of the product for the given brand.
     * @throws InvalidBrandException when the brand doesn't exist for the product.
     */
-  def getPrice(brand: BrandName): Double =
-    if brand.isEmpty then
+  def getPrice(brand: Option[BrandName]): Double =
+    if !brand.isDefined then
       prices(getDefaultBrand)
-    else if !prices.contains(brand) then
+    else if !prices.contains(brand.get) then
       throw new InvalidBrandException("Invalid brand name for this product")
-    else prices(brand)
+    else prices(brand.get)
   end getPrice
 
   /**

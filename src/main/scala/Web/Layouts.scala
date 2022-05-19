@@ -15,13 +15,15 @@ object Layouts:
     tag("link")(href := "/static/css/main.css", rel := "stylesheet")
   )
 
-  private def navElem(linkTitle: String, linkHref: String) = tag("nav")(
+  private def navElem(linkTitle: String, linkHref: String, session: Session) = tag("nav")(
     a(
       cls := "nav-brand"
     )(
       "Bot-Tender"
     ),
     div(
+      session.getCurrentUser.map(u => "Hello " + u + "! ")
+        .getOrElse(""),
       cls := "nav-item"
     )(
       a(href := linkHref)(linkTitle)
@@ -48,8 +50,8 @@ object Layouts:
     html(
       headElem(),
       body(
-        session.getCurrentUser.map(u => navElem("Logout", "/logout"))
-          .getOrElse(navElem("Login", "/login")),
+        session.getCurrentUser.map(u => navElem("Logout", "/logout", session))
+          .getOrElse(navElem("Login", "/login", session)),
         div(
           cls := "content"
         )(
@@ -67,7 +69,7 @@ object Layouts:
     html(
       headElem(),
       body(
-        navElem("Go to the message board", "/"),
+        navElem("Go to the message board", "/", session),
         div(
           cls := "content"
         )(
@@ -83,7 +85,7 @@ object Layouts:
     html(
       headElem(),
       body(
-        navElem("Go to the message board", "/"),
+        navElem("Go to the message board", "/", session),
         div(
           cls := "content"
         )(
@@ -92,10 +94,13 @@ object Layouts:
       )
     )
 
-  def message(author : String, content : String) =
+  def message(author : String, content : Frag) : Frag =
    div(cls:="msg")(
         tag("span")(cls:="author")(author),
-        tag("span")(cls:="msg-content")(content)
-      )
+        content
+      ) 
+
+  def messageContent(message : String) : Frag =
+     tag("span")(cls:="msg-content")(message)
 
 end Layouts

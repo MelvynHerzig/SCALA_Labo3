@@ -129,28 +129,23 @@ class Parser(tokenized: Tokenized):
     * @return Return a product ExprTree.
     */
   private def parseProduct(): ExprTree =
-    var name = ""
-    var quantity = 1
-    var brand = ""
 
     // Getting quantity
-    if curToken == NUM then
-      quantity = Integer.parseInt(curValue)
-      readToken()
-    else expected(NUM)
+    val quantity = Integer.parseInt(eat(NUM))
 
     // Getting product type
-    if curToken == PRODUCT then
-      name = curValue
-      readToken()
-    else expected(PRODUCT)
+    val name = eat(PRODUCT)
+
+    var brand = ""
 
     // Getting product brand (facultative)
     if curToken == MARQUE then
-      brand = curValue
+      val brand = curValue
       readToken()
+      Product(name, Some(brand), quantity)
+    else
+      Product(name, None, quantity)
     end if
-    Product(name, brand, quantity)
   end parseProduct
 
   /**

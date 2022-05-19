@@ -31,7 +31,7 @@ class AnalyzerService(productSvc: ProductService,
   def reply(session: Session)(t: ExprTree): String =
     // you can use this to avoid having to pass the session when doing recursion
     val inner: ExprTree => String = reply(session)
-    val user = session.getCurrentUser.getOrElse("")
+    val user = session.getCurrentUser
 
     t match
       // Example cases
@@ -44,23 +44,23 @@ class AnalyzerService(productSvc: ProductService,
         s"Bonjour $pseudo !"
 
       case Command(products) =>
-        if accountSvc.isAccountExisting(user) then
+        if user.isDefined && accountSvc.isAccountExisting(user.get) then
           val price = computePrice(products)
-          if price > accountSvc.getAccountBalance(user) then
+          if price > accountSvc.getAccountBalance(user.get) then
             "Le montant actuel de votre solde est insuffisant"
           else
-            accountSvc.purchase(user, price)
-            s"Voici donc ${inner(products)} ! Cela coûte $price et votre nouveau solde est de ${accountSvc.getAccountBalance(user)}"
+            accountSvc.purchase(user.get, price)
+            s"Voici donc ${inner(products)} ! Cela coûte $price et votre nouveau solde est de ${accountSvc.getAccountBalance(user.get)}"
         else s"Veuillez d'abord vous identifier"
 
       case Balance() =>
-        if accountSvc.isAccountExisting(user) then
-          s"Le montant actuel de votre solde est de CHF ${accountSvc.getAccountBalance(user)}"
+        if user.isDefined && accountSvc.isAccountExisting(user.get) then
+          s"Le montant actuel de votre solde est de CHF ${accountSvc.getAccountBalance(user.get)}"
         else s"Veuillez d'abord vous identifier"
 
       case Price(products) => s"Cela coûte CHF ${computePrice(products)}."
 
-      case Product(name, brand, quantity) => s"$quantity $name $brand"
+      case Product(name, brand, quantity) => s"$quantity $name ${brand.get}"
 
       case Or(lExp, rExp) => if computePrice(lExp) <= computePrice(rExp) then s"${inner(lExp)}" else s"${inner(rExp)}"
       case And(lExp, rExp) => s"${inner(lExp)} et ${inner(rExp)}"

@@ -21,7 +21,7 @@ class MessagesRoutes(tokenizerSvc: TokenizerService,
                      sessionSvc: SessionService)(implicit val log: cask.Logger) extends cask.Routes:
     import Decorators.getSession
 
-    // var subscribers : List[cask.endpoints.WsChannelActor] = Nil
+    var subscribers : List[cask.endpoints.WsChannelActor] = Nil
 
     @getSession(sessionSvc) // This decorator fills the `(session: Session)` part of the `index` method.
     @cask.get("/")
@@ -31,10 +31,16 @@ class MessagesRoutes(tokenizerSvc: TokenizerService,
         Layouts.index()(session)
     end index
 
+    @cask.get("/clearHistory")
+    def clearHistory() =
+        msgSvc.deleteHistory()
+        cask.Redirect("/")
+    end clearHistory
+
     // TODO - Part 3 Step 4b: Process the new messages sent as JSON object to `/send`. The JSON looks
     //      like this: `{ "msg" : "The content of the message" }`.
     //
-    //      A JSON object is returned. If an error occurred, it looks like this:
+    //      A JSON object is returned. If an error occurred , it looks like this:
     //      `{ "success" : false, "err" : "An error message that will be displayed" }`.
     //      Otherwise (no error), it looks like this:
     //      `{ "success" : true, "err" : "" }`
@@ -53,8 +59,11 @@ class MessagesRoutes(tokenizerSvc: TokenizerService,
         else if session.getCurrentUser.isEmpty then
             ujson.Obj("success" -> false, "err" -> "You must be logged in to send messages")
         else
-            msgSvc.add(session.getCurrentUser.get, Layouts.message(session.getCurrentUser.get, msg), getMention(msg))
-            // subscribers.foreach(sub => sub.send(cask.Ws.Text(msgSvc.getLatestMessages(20))))
+            msgSvc.add(session.getCurrentUser.get, Layouts.messageContent(msg), getMention(msg))
+
+            subscribers.foreach(_.send(cask.Ws.Text(
+              latestMessagesAsString(20)
+            )))
             ujson.Obj("success" -> true, "err" -> "")
         end if
 
@@ -67,19 +76,24 @@ class MessagesRoutes(tokenizerSvc: TokenizerService,
 
     // TODO - Part 3 Step 4c: Process and store the new websocket connection made to `/subscribe`
     @cask.websocket("/subscribe")
-    def showUserProfile(): cask.WebsocketResult = ???/*{
-      cask.WsHandler = cask.WsHandler { channel =>
-        // subscribers = channel +: subscribers
-        //channel.send(cask.Ws.Text("Someone joined"))
+    def showUserProfile() : cask.WebsocketResult =
+        cask.WsHandler { channel =>
+          subscribers = subscribers :+ channel
           cask.WsActor {
-          case cask.Ws.Text(data) =>
-            channel.send(cask.Ws.Text(" " + data))
+              case cask.Ws.Close(_, _) => {
+                subscribers = subscribers.filter(_ != channel)
+              }
+          }
         }
+    end showUserProfile
 
-      }
-    }*/
+    private def latestMessagesAsString(number : Int) =
+      msgSvc.getLatestMessages(number)
+        .reverse
+        .map((author, content) => Layouts.message(author, content).toString)
+        .reduceLeft(_ + _)
 
-    // TODO - Part 3 Step 4d: Delete the message history when a GET is made to `/clearHistory`
+  // TODO - Part 3 Step 4d: Delete the message history when a GET is made to `/clearHistory`
     //
     // TODO - Part 3 Step 5: Modify the code of step 4b to process the messages sent to the bot (message
     //      starts with `@bot `). This message and its reply from the bot will be added to the message

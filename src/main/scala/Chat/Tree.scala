@@ -23,7 +23,7 @@ object ExprTree:
   case class Price(products: ExprTree) extends ExprTree
 
   // Product - Beer and croissant
-  case class Product(name: String, brand: String, quantity: Int) extends ExprTree
+  case class Product(name: String, brand: Option[String], quantity: Int) extends ExprTree
 
   // Operators - exprTree are Product possibly combined with other Operators.
   case class And(leftExp: ExprTree, rightExp: ExprTree) extends ExprTree
