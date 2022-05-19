@@ -16,10 +16,14 @@ class Parser(tokenized: Tokenized):
 
   def curToken: Token = curTuple._2
 
-  /** Reads the next token and assigns it into the global variable curTuple */
+  /** 
+    * Reads the next token and assigns it into the global variable curTuple 
+    */
   def readToken(): Unit = curTuple = tokenized.nextToken()
 
-  /** "Eats" the expected token and returns it value, or terminates with an error. */
+  /** 
+    * "Eats" the expected token and returns it value, or terminates with an error. 
+    */
   private def eat(token: Token): String =
     if token == curToken then
       val tmp = curValue
@@ -28,13 +32,17 @@ class Parser(tokenized: Tokenized):
     else expected(token)
   end eat
 
-  /** Complains that what was found was not expected. The method accepts arbitrarily many arguments of type Token */
+  /** 
+    * Complains that what was found was not expected. The method accepts arbitrarily many arguments of type Token 
+    */
   private def expected(token: Token, more: Token*): Nothing =
     val expectedTokens = more.prepended(token).mkString(" or ")
     throw new UnexpectedTokenException(s"Expected: $expectedTokens, found: $curToken")
   end expected
 
-  /** the root method of the parser: parses an entry phrase */
+  /** 
+    * the root method of the parser: parses an entry phrase 
+    */
   def parsePhrases(): ExprTree =
 
     // A phrase may begin with a "BONJOUR"

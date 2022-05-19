@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 }, false);
 
+/**
+ * JS to handle message form submit
+ */
 function submitMessageForm() {
     fetch(
         "/send",
@@ -22,6 +25,9 @@ function submitMessageForm() {
         })
 }
 
+/**
+ * JS to handle login form submit
+ */
 function submitLoginForm() {
     fetch(
         "/login",
@@ -41,6 +47,9 @@ function submitLoginForm() {
         })
 }
 
+/**
+ * JS to handle registration form submit
+ */
 function submitRegistrationForm() {
     fetch(
         "/register",

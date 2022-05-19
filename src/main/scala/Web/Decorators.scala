@@ -31,3 +31,7 @@ object Decorators:
                 res.map(r => r.copy(cookies = r.cookies.appended(cask.Cookie(SESSION_COOKIE, session.sid))))
             else
                 res
+        end wrapFunction
+    end getSession
+end Decorators
+

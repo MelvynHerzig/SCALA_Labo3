@@ -16,49 +16,69 @@ class UsersRoutes(accountSvc: AccountService,
 
     import Decorators.getSession
 
-    // TODO - Part 3 Step 3a: Display a login form and register form page for the following URL: `/login`.
+    /**
+      *  Display a login form and register form page for the following URL: `/login`.
+      * @param session Current session.
+      * @return Login page.
+      */
     @getSession(sessionSvc)
     @cask.get("/login")
     def loginPage()(session: Session) =
-        Layouts.loginPage()(session)
+        Layouts.loginPage(None, None)(session)
     end loginPage
 
-    // TODO - Part 3 Step 3b: Process the login information sent by the form with POST to `/login`,
-    //      set the user in the provided session (if the user exists) and display a successful or
-    //      failed login page.
+    /**
+      * Part 3 Step 3b: Process the login information sent by the form with POST to `/login`,
+      * set the user in the provided session (if the user exists) and display a successful.
+      * @param loginInput Login value
+      * @param session Current sessions.
+      * @return The login page with an error or a success page.
+      */
     @getSession(sessionSvc)
     @cask.postForm("/login")
     def login(loginInput : String)(session: Session) =
-      if loginInput.isEmpty then Layouts.loginPage("Incorrect username")(session)
-        else if accountSvc.isAccountExisting(loginInput) then
+      // If input is empty display error
+      if loginInput.isEmpty then Layouts.loginPage(Some("Incorrect username"), None)(session)
+      // If account exists.
+      else if accountSvc.isAccountExisting(loginInput) then
             session.setCurrentUser(loginInput)
             Layouts.successPage("logged in")(session)
-        else Layouts.loginPage("User not found")(session)
+      // Otherwise
+      else Layouts.loginPage(Some("User not found"), None)(session)
     end login
 
-    // TODO - Part 3 Step 3c: Process the register information sent by the form with POST to `/register`,
-    //      create the user, set the user in the provided session and display a successful
-    //      register page.
+    /**
+      * Process the register information sent by the form with POST to `/register`,
+      * create the user, set the user in the provided session and display a successful register page.
+      * @param registerInput Registration input.
+      * @param session Current session.
+      * @return The login page with an error or a success page.
+      */
     @getSession(sessionSvc)
     @cask.postForm("/register")
     def register(registerInput : String)(session: Session) =
-        if registerInput.isEmpty then Layouts.loginPage("", "Incorrect username")(session)
+        // If input is empty display error
+        if registerInput.isEmpty then Layouts.loginPage(None, Some("Incorrect username"))(session)
+        // If the account does not already exist
         else if !accountSvc.isAccountExisting(registerInput) then
             accountSvc.addAccount(registerInput, 30)
             session.setCurrentUser(registerInput)
             Layouts.successPage("registered")(session)
-        else Layouts.loginPage("", "User already exist")(session)
+        // otherwise
+        else Layouts.loginPage(None, Some("User already exist"))(session)
     end register
 
-    // TODO - Part 3 Step 3d: Reset the current session and display a successful logout page.
+    /**
+      * Reset the current session and display a successful logout page.
+      * @param session
+      * @return
+      */
     @getSession(sessionSvc)
     @cask.get("/logout")
     def logout()(session: Session) =
         session.reset()
         Layouts.successPage("logged out")(session)
     end logout
-
-
 
     initialize()
 end UsersRoutes

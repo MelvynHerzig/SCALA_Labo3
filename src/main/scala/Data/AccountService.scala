@@ -13,7 +13,7 @@ trait AccountService:
 
   /**
     * Add an account to the existing accounts
-    *
+
     * @param user    the name of the user
     * @param balance the initial balance value
     */

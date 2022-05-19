@@ -35,9 +35,7 @@ trait MessageService:
 
 class MessageImpl extends MessageService:
 
-    // TODO - Part 3 Step 4a: Store the messages and the corresponding user in memory.
-    //       Implement methods to add new messages, to get the last 20 messages and to delete all existing messages.
-
+   
     // List of memorized messages.
     private var messages : List[Message] = Nil
 

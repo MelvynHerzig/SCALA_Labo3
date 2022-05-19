@@ -31,10 +31,7 @@ object Dictionary:
     "stp" -> "svp",
     
     "maison"->"maison",
-    "home made"->"maison",
-    "fait maison"->"maison",
     "cailler"->"cailler",
-    "au chocolat"->"cailler",
     "farmer"->"farmer",
     "boxer" -> "boxer",
     "wittekop" -> "wittekop",

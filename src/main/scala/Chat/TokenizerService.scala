@@ -61,6 +61,7 @@ class TokenizerService(spellCheckerSvc: SpellCheckerService):
     val words = input.replaceAll("[.,!?*]", "")
       .replaceAll("[’']", " ")
       .trim.replaceAll(" +", " ")
+      .toLowerCase()
       .split(" ")
 
     var tokens: Array[(String, Token)] = Array()

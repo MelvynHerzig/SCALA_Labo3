@@ -60,7 +60,7 @@ class AnalyzerService(productSvc: ProductService,
 
       case Price(products) => s"Cela coûte CHF ${computePrice(products)}."
 
-      case Product(name, brand, quantity) => s"$quantity $name ${brand.get}"
+      case Product(name, brand, quantity) => s"$quantity $name ${brand.getOrElse("")}"
 
       case Or(lExp, rExp) => if computePrice(lExp) <= computePrice(rExp) then s"${inner(lExp)}" else s"${inner(rExp)}"
       case And(lExp, rExp) => s"${inner(lExp)} et ${inner(rExp)}"
